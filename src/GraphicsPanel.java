@@ -20,7 +20,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
     private Projectile leftPurpleHollow, rightPurpleHollow, rightDismantle, leftDismantle;
     private double oneLeftIncrementer, oneRightIncrementer, twoRightIncrementer, twoLeftIncrementer;
     private ArrayList<Point> oneLeftList, oneRightList, twoLeftList, twoRightList;
-    private boolean gojoDomainActive, sukunaDomainActive, bothDomainActive;
+    private boolean gojoDomainActive, sukunaDomainActive;
     private Timer timer;
     private int time;
     private Clip gojoClip, sukunaClip, bothClip;
@@ -50,7 +50,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         twoRightList = new ArrayList<>();
         gojoDomainActive = false;
         sukunaDomainActive = false;
-        bothDomainActive = false;
         time = 0;
         timer = new Timer(1000, this);
         playGojoDomain = true;
@@ -129,7 +128,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         }
 
         // playerOne movement keys
-        if(!sukunaDomainActive){
+        if (!sukunaDomainActive) {
             if (pressedKeys[65]) {
                 playerOne.moveLeft();
                 playerOne.changefacingDirection();
@@ -146,7 +145,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         }
 
         // playerTwo movement keys
-        if(!gojoDomainActive) {
+        if (!gojoDomainActive) {
             if (pressedKeys[37]) {
                 playerTwo.moveLeft();
                 playerTwo.changefacingDirection();
@@ -160,7 +159,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             if (pressedKeys[40]) {
                 playerTwo.moveDown();
             }
-        }else{
+        } else {
             if (pressedKeys[37]) {
                 playerTwo.moveRight();
                 playerTwo.changefacingDirection();
@@ -190,12 +189,12 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                     rightPurpleHollowActive = false;
                     oneRightList.clear();
                     oneRightIncrementer = 15;
-                }else if(rightPurpleHollow.rect().intersects(playerTwo.rect())){
+                } else if (rightPurpleHollow.rect().intersects(playerTwo.rect())) {
                     rightPurpleHollowActive = false;
                     oneRightList.clear();
                     oneRightIncrementer = 15;
                     playerTwo.loseHealth();
-                    if(!sukunaDomainActive) {
+                    if (!sukunaDomainActive) {
                         if (playerOne.getDomainBar() < 4) {
                             playerOne.chargeDomain();
                         }
@@ -216,12 +215,12 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                     leftPurpleHollowActive = false;
                     oneLeftList.clear();
                     oneLeftIncrementer = 15;
-                }else if(leftPurpleHollow.rect().intersects(playerTwo.rect())){
+                } else if (leftPurpleHollow.rect().intersects(playerTwo.rect())) {
                     leftPurpleHollowActive = false;
                     oneLeftList.clear();
                     oneLeftIncrementer = 15;
                     playerTwo.loseHealth();
-                    if(!sukunaDomainActive) {
+                    if (!sukunaDomainActive) {
                         if (playerOne.getDomainBar() < 4) {
                             playerOne.chargeDomain();
                         }
@@ -231,7 +230,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         }
 
         // playerTwo attack keys
-        if(!gojoDomainActive) {
+        if (!gojoDomainActive) {
             if (!rightDismantleActive) {
                 if (pressedKeys[74]) {
                     leftDismantleActive = true;
@@ -280,7 +279,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                     }
                 }
             }
-        }else{
+        } else {
             if (!rightDismantleActive) {
                 if (pressedKeys[75]) {
                     leftDismantleActive = true;
@@ -299,7 +298,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                         twoLeftList.clear();
                         twoLeftIncrementer = 15;
                         playerOne.loseHealth();
-                        if(!gojoDomainActive){
+                        if (!gojoDomainActive) {
                             if (playerTwo.getDomainBar() < 4) {
                                 playerTwo.chargeDomain();
                             }
@@ -325,7 +324,7 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                         twoRightList.clear();
                         twoRightIncrementer = 15;
                         playerOne.loseHealth();
-                        if(!gojoDomainActive) {
+                        if (!gojoDomainActive) {
                             if (playerTwo.getDomainBar() < 4) {
                                 playerTwo.chargeDomain();
                             }
@@ -333,27 +332,20 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                     }
                 }
             }
-        }
-        if((pressedKeys[70] && playerOne.getDomainBar() == 4) && (pressedKeys[77] && playerTwo.getDomainBar() == 4)){
-            bothDomainActive = true;
         }
 
         // playerOne domain keys
-        if(!sukunaDomainActive) {
-            if (pressedKeys[70] && playerOne.getDomainBar() == 4) {
-                gojoDomainActive = true;
-            }
+
+        if (pressedKeys[70] && playerOne.getDomainBar() == 4) {
+            gojoDomainActive = true;
         }
 
         // playerTwo domain keys
-        if(!gojoDomainActive) {
-            if (pressedKeys[77] && playerTwo.getDomainBar() == 4) {
-                sukunaDomainActive = true;
-            }
+        if (pressedKeys[77] && playerTwo.getDomainBar() == 4) {
+            sukunaDomainActive = true;
         }
-
-        if(bothDomainActive){
-            if(playBothDomain){
+        if(gojoDomainActive && sukunaDomainActive){
+            if (playBothDomain) {
                 playBothMusic();
                 playBothDomain = false;
             }
@@ -361,11 +353,12 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
             playerOne.resetDomainBar();
             playerTwo.resetDomainBar();
             timer.start();
-            if(time == 6){
+            if (time == 6) {
+                background = backupBackground;
                 timer.stop();
                 time = 0;
-                background = backupBackground;
-                bothDomainActive = false;
+                gojoDomainActive = false;
+                sukunaDomainActive = false;
                 playBothDomain = true;
             }
         }else if(gojoDomainActive){
@@ -396,10 +389,10 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
                 time = 0;
                 background = backupBackground;
                 sukunaDomainActive = false;
-                playSukunaDomain = true;
             }
         }
     }
+
 
     public void keyTyped(KeyEvent e) { }
 
@@ -412,7 +405,6 @@ public class GraphicsPanel extends JPanel implements KeyListener, ActionListener
         int key = e.getKeyCode();
         pressedKeys[key] = false;
     }
-
 
     public void actionPerformed(ActionEvent e){
         if (e.getSource() instanceof Timer) {
